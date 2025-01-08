@@ -40,11 +40,16 @@ func main() {
 	var mercado = model.NewCompra(time.Now())
 	
 	
-	 tenis := model.NewItem("Tenis nike", 200, 1)
+	 tenis,err := model.NewItem("", 200, 1)
 
-	 
+	 if(err != nil){
+		fmt.Println(err.Error())
+	 }
 
-	 arroz := model.NewItem("Arroz indiano",10.0, 2,);
+	 arroz, err := model.NewItem("Arroz indiano",10.0, 2,);
+	 if(err != nil){
+		fmt.Println(err.Error())
+	 }
 
 	mercado.AdicionarItem(*tenis)
 	mercado.AdicionarItem(*arroz)
