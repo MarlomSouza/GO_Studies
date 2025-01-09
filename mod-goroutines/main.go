@@ -2,19 +2,37 @@ package main
 
 import (
 	"fmt"
-	"strconv"
+	"sync"
 	"time"
 )
 
 func main() {
+	var wg sync.WaitGroup
 
-	for i, _ := range make([]int, 1000) {
-		go showMessage(strconv.Itoa(i))
-	}
+	wg.Add(3)
+	go callAPI(&wg)
+	go callDB(&wg)
+	go internalProcess(&wg)
 
-	time.Sleep(time.Duration(time.Hour.Seconds() * float64(5)))
+	wg.Wait()
+
 }
 
-func showMessage(message string) {
-	fmt.Println(message)
+func callDB(wg *sync.WaitGroup){
+	time.Sleep(1 * time.Second)
+	fmt.Println("Call DB END")
+	wg.Done()
+
+}
+
+func callAPI(wg *sync.WaitGroup){
+	time.Sleep(4 * time.Second)
+	fmt.Println("Call API END")
+	wg.Done()
+}
+
+func internalProcess(wg *sync.WaitGroup)  {
+	time.Sleep(2 * time.Second)
+	fmt.Println("Call internallProcess END")
+	wg.Done()
 }
