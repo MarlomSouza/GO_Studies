@@ -12,7 +12,7 @@ import (
 
 var (
 	repository = database.CampaignRepository{}
-	service    = campaign.Service{Repository: &repository}
+	service    = campaign.ServiceImp{Repository: &repository}
 )
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 	r.Use(middleware.Recoverer)
 
 	handler := endpoints.HandlerCampaign{
-		CampaignService: service,
+		CampaignService: &service,
 	}
 
 	r.Post("/campaigns", endpoints.HandlerError(handler.CampaignPost))
