@@ -1,23 +1,26 @@
 package main
 
-import (
-	"fmt"
-	"sync"
-	"time"
-)
+import "fmt"
 
 func main() {
-	var m sync.Mutex
-	i :=0
-	for x :=0; x < 1000; x++{
-		go func(){
-			m.Lock()
-			i++
-			m.Unlock()
-		}()
+	channel := make(chan int)
+	go setList(channel)
+	go setList2()
+	for v := range channel {
+		fmt.Println(v)
 	}
-	// wg.Wait()
-	time.Sleep(2 * time.Second)
-	fmt.Println(i)
+}
 
+func setList(channel chan int) {
+	for i := 0; i < 100; i++ {
+		channel <- i
+	}
+	close(channel)
+}
+
+func setList2() {
+	for i := 100; i >=0 ; i-- {
+		fmt.Println("Set list 2", i)
+	}
+	
 }
