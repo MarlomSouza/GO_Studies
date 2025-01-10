@@ -1,8 +1,11 @@
 POST http://localhost:3000/campaigns
 
 {
-  "name": "Test cam",
+  "name": "Test cam 2",
   "content": "This t",
-  "emails": ["marlom1012@gmail.com"]
+  "emails": ["marlom1012@gmail.com", "xxx@gmail.com"]
 } 
 
+###
+
+GET  http://localhost:3000/campaigns

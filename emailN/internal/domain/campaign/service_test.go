@@ -20,6 +20,12 @@ func (r *repositoryMock) Save(campaign *Campaign) error {
 
 }
 
+func (r *repositoryMock) Get() error {
+	args := r.Called()
+	return args.Error(0)
+
+}
+
 var (
 	newCampaign = contract.NewCampaignDto{
 		Name:    "Test Y",

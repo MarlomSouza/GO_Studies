@@ -1,14 +1,13 @@
 package main
 
 import (
-	"emailn/internal/contract"
 	"emailn/internal/domain/campaign"
+	"emailn/internal/endpoints"
 	"emailn/internal/infraestructure/database"
 	"net/http"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/render"
 )
 
 var (
@@ -23,25 +22,12 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Post("/campaigns", func(w http.ResponseWriter, r *http.Request) {
-		var request contract.NewCampaignDto
-		err := render.DecodeJSON(r.Body, &request)
-		if err != nil {
-			println(err.Error())
-		}
+	handler := endpoints.HandlerCampaign{
+		CampaignService: service,
+	}
 
-		id, err := service.Create(request)
-
-		if err != nil {
-			render.Status(r, 400)
-			render.JSON(w, r, map[string]string{"error": err.Error()})
-			return
-		}
-
-		render.Status(r, 201)
-		render.JSON(w, r, map[string]string{"id": id})
-
-	})
+	r.Post("/campaigns", handler.CampaignPost)
+	r.Get("/campaigns", handler.CampaignGet)
 
 	http.ListenAndServe(":3000", r)
 }

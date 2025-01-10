@@ -29,3 +29,13 @@ func (s *Service) Create(dto contract.NewCampaignDto) (string, error) {
 
 	return campaign.Id, nil
 }
+
+func (s *Service) Get() ([]Campaign, error) {
+	campaigns, err := s.Repository.Get()
+
+	if err != nil {
+		return []Campaign{}, internalerrors.ErrInternal
+	}
+
+	return campaigns, nil
+}
