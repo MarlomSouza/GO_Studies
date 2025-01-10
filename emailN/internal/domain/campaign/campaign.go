@@ -12,15 +12,14 @@ type Contact struct {
 }
 
 type Campaign struct {
-	Id        string
-	Name      string
-	CreatedOn time.Time
-	Content   string
+	Id         string
+	Name       string
+	CreatedOn  time.Time
+	Content    string
 	Recipients []Contact
-
 }
 
-func NewCampaign (name string, content string, recipients []Contact) (*Campaign, error){
+func NewCampaign(name string, content string, recipients []Contact) (*Campaign, error) {
 
 	isValid, err := isValidCampaign(name, content, recipients)
 	if !isValid {
@@ -28,14 +27,13 @@ func NewCampaign (name string, content string, recipients []Contact) (*Campaign,
 	}
 
 	return &Campaign{
-		Id: xid.New().String(),
-		Name:  name,
-		Content: content,
-		Recipients:  recipients,
-		CreatedOn: time.Now(),
+		Id:         xid.New().String(),
+		Name:       name,
+		Content:    content,
+		Recipients: recipients,
+		CreatedOn:  time.Now(),
 	}, nil
 }
-
 
 func isValidCampaign(name string, content string, recipients []Contact) (bool, error) {
 	if name == "" {
@@ -50,5 +48,5 @@ func isValidCampaign(name string, content string, recipients []Contact) (bool, e
 		return false, errors.New("recipients is required")
 	}
 
-	return true,nil
+	return true, nil
 }
