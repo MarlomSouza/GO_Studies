@@ -3,7 +3,7 @@ package main
 import (
 	"emailn/internal/domain/campaign"
 	"emailn/internal/endpoints"
-	"emailn/internal/infraestructure/database"
+	"emailn/internal/infrastructure/database"
 	"net/http"
 
 	"github.com/go-chi/chi/middleware"
