@@ -8,7 +8,8 @@ import (
 
 func main() {
 
-	campaign := campaign.Campaign{}
+	contact := []campaign.Contact{{Email: "22@gmail.com"}, {Email: "22"}}
+	campaign := campaign.Campaign{Recipients: contact}
 	validate := validator.New()
 	err := validate.Struct(campaign)
 
@@ -17,7 +18,14 @@ func main() {
 	} else {
 		validationErros := err.(validator.ValidationErrors)
 		for _, v := range validationErros {
-			println(v.Error())
+
+			switch v.Tag() {
+			case "required":
+				println(v.StructField() + " is required")
+			case "min":
+				println(v.StructField() + " is invalid")
+			}
+
 		}
 	}
 }

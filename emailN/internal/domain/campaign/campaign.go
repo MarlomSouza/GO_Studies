@@ -8,7 +8,7 @@ import (
 )
 
 type Contact struct {
-	Email string `validate:"required"`
+	Email string `validate:"email"`
 }
 
 type Campaign struct {
@@ -16,7 +16,7 @@ type Campaign struct {
 	Name       string    `validate:"min=5,max=24"`
 	CreatedOn  time.Time `validate:"required"`
 	Content    string    `validate:"min=5,max=24"`
-	Recipients []Contact `validate:"required"`
+	Recipients []Contact `validate:"required,dive"`
 }
 
 func NewCampaign(name string, content string, recipients []Contact) (*Campaign, error) {
