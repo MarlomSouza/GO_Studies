@@ -47,3 +47,25 @@ func Test_Create_SaveCampaign(t *testing.T) {
 
 	repositoryMock.AssertExpectations(t)
 }
+
+func Test_Create_SaveCampaign_ValidateObject(t *testing.T) {
+	newCampaign := contract.NewCampaignDto{
+		Name:    "Test Y",
+		Content: "Content",
+		Emails:  []string{"xxx@gmail.com", "xxx@outlook.com"},
+	}
+	repositoryMock := new(repositoryMock)
+	repositoryMock.On("Save", mock.MatchedBy(func(campaign *Campaign) bool {
+		if newCampaign.Name != campaign.Name || newCampaign.Content != campaign.Content {
+			return false
+		}
+
+		return true
+	})).Return(nil)
+
+	service := Service{repository: repositoryMock}
+
+	service.Create(newCampaign)
+
+	repositoryMock.AssertExpectations(t)
+}
