@@ -80,5 +80,5 @@ func Test_Create_ValidateDomainError(t *testing.T) {
 
 	_, err := service.Create(newCampaign)
 
-	assert.Equal("name is required", err.Error())
+	assert.Equal("name is required with min 5", err.Error())
 }
