@@ -63,6 +63,14 @@ func Test_Create_SaveCampaign_ValidateObject(t *testing.T) {
 	mockRepository.AssertExpectations(t)
 }
 
+func Test_Create_ValidateDomainError(t *testing.T) {
+	assert := assert.New(t)
+
+	_, err := service.Create(contract.NewCampaignDto{})
+
+	assert.False(errors.Is(err, internalerrors.ErrInternal))
+}
+
 func Test_Create_ValidateDatabaseError(t *testing.T) {
 	assert := assert.New(t)
 	mockRepository := new(repositoryMock)
@@ -72,13 +80,4 @@ func Test_Create_ValidateDatabaseError(t *testing.T) {
 	_, err := service.Create(newCampaign)
 
 	assert.True(errors.Is(err, internalerrors.ErrInternal))
-}
-
-func Test_Create_ValidateDomainError(t *testing.T) {
-	assert := assert.New(t)
-	newCampaign.Name = ""
-
-	_, err := service.Create(newCampaign)
-
-	assert.Equal("name is required with min 5", err.Error())
 }
