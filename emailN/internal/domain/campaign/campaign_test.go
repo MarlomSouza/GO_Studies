@@ -62,3 +62,20 @@ func Test_NewCampaign_MustValidateRecipients(t *testing.T) {
 
 	assert.Equal("recipients is required", err.Error())
 }
+
+func Test_NewContact(t *testing.T) {
+	assert := assert.New(t)
+	email := "xxx@gmail.com"
+
+	sut, _ := NewContact(email)
+
+	assert.Equal(email, sut.Email)
+}
+
+func Test_NewContact_MustNotBeEmpty(t *testing.T) {
+	assert := assert.New(t)
+
+	_, err := NewContact("")
+
+	assert.Equal("invalid email", err.Error())
+}

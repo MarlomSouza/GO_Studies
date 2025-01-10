@@ -50,3 +50,14 @@ func isValidCampaign(name string, content string, recipients []Contact) (bool, e
 
 	return true, nil
 }
+
+func NewContact(email string) (*Contact, error) {
+
+	if email == "" {
+		return nil, errors.New("invalid email")
+	}
+
+	return &Contact{
+		Email: email,
+	}, nil
+}
