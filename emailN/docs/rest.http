@@ -1,7 +1,7 @@
 POST http://localhost:3000/campaigns
 
 {
-  "name": "Test cam 2",
+  "name": "Tes",
   "content": "This t",
   "emails": ["marlom1012@gmail.com", "xxx@gmail.com"]
 } 

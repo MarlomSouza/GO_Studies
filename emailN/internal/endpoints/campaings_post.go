@@ -2,14 +2,12 @@ package endpoints
 
 import (
 	"emailn/internal/contract"
-	internalerrors "emailn/internal/internal-errors"
-	"errors"
 	"net/http"
 
 	"github.com/go-chi/render"
 )
 
-func (h *HandlerCampaign) CampaignPost(w http.ResponseWriter, r *http.Request) {
+func (h *HandlerCampaign) CampaignPost(w http.ResponseWriter, r *http.Request) (EndpointStruct, error) {
 
 	var request contract.NewCampaignDto
 	err := render.DecodeJSON(r.Body, &request)
@@ -19,20 +17,8 @@ func (h *HandlerCampaign) CampaignPost(w http.ResponseWriter, r *http.Request) {
 
 	id, err := h.CampaignService.Create(request)
 
-	if err != nil {
-
-		if errors.Is(err, internalerrors.ErrInternal) {
-			render.Status(r, 500)
-		} else {
-			render.Status(r, 400)
-		}
-
-		render.JSON(w, r, map[string]string{"error": err.Error()})
-		return
-
-	}
-
-	render.Status(r, 201)
-	render.JSON(w, r, map[string]string{"id": id})
+	return EndpointStruct{
+		Obj: map[string]string{"id": id}, Status: 201,
+	}, err
 
 }
