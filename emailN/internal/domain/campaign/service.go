@@ -17,5 +17,7 @@ func (s *Service) Create(dto contract.NewCampaignDto) (string, error) {
 
 	campaign, err := NewCampaign(dto.Name, dto.Content, recipients)
 
+	s.repository.Save(campaign)
+
 	return campaign.Id, err
 }
