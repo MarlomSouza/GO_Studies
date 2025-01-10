@@ -8,23 +8,23 @@ import (
 )
 
 type Contact struct {
-	Email string
+	Email string `validate:"required"`
 }
 
 type Campaign struct {
-	Id         string
-	Name       string
-	CreatedOn  time.Time
-	Content    string
-	Recipients []Contact
+	Id         string    `validate:"required"`
+	Name       string    `validate:"min=5,max=24"`
+	CreatedOn  time.Time `validate:"required"`
+	Content    string    `validate:"min=5,max=24"`
+	Recipients []Contact `validate:"required"`
 }
 
 func NewCampaign(name string, content string, recipients []Contact) (*Campaign, error) {
 
-	isValid, err := isValidCampaign(name, content, recipients)
-	if !isValid {
-		return nil, err
-	}
+	// isValid, err := isValidCampaign(name, content, recipients)
+	// if !isValid {
+	// 	return nil, err
+	// }
 
 	return &Campaign{
 		Id:         xid.New().String(),
@@ -35,21 +35,21 @@ func NewCampaign(name string, content string, recipients []Contact) (*Campaign, 
 	}, nil
 }
 
-func isValidCampaign(name string, content string, recipients []Contact) (bool, error) {
-	if name == "" {
-		return false, errors.New("name is required")
-	}
+// func isValidCampaign(name string, content string, recipients []Contact) (bool, error) {
+// 	if name == "" {
+// 		return false, errors.New("name is required")
+// 	}
 
-	if content == "" {
-		return false, errors.New("content is required")
-	}
+// 	if content == "" {
+// 		return false, errors.New("content is required")
+// 	}
 
-	if len(recipients) == 0 {
-		return false, errors.New("recipients is required")
-	}
+// 	if len(recipients) == 0 {
+// 		return false, errors.New("recipients is required")
+// 	}
 
-	return true, nil
-}
+// 	return true, nil
+// }
 
 func NewContact(email string) (*Contact, error) {
 
