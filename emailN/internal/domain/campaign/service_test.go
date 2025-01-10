@@ -26,6 +26,11 @@ func (r *repositoryMock) Get() ([]Campaign, error) {
 
 }
 
+func (r *repositoryMock) GetById(id string) (Campaign, error) {
+	args := r.Called(id)
+	return args.Get(0).(Campaign), args.Error(1)
+}
+
 var (
 	newCampaign = contract.NewCampaignDto{
 		Name:    "Test Y",
@@ -86,4 +91,24 @@ func Test_Create_ValidateDatabaseError(t *testing.T) {
 	_, err := service.Create(newCampaign)
 
 	assert.True(errors.Is(err, internalerrors.ErrInternal))
+}
+
+func Test_Get_ShouldReturnACampaignBasedOnId(t *testing.T) {
+	assert := assert.New(t)
+	id := "2"
+	expectedObject := Campaign{
+		Name:    fake.Company().Name(),
+		Content: fake.Lorem().Text(100),
+		Status:  Pending,
+	}
+	mockRepository := new(repositoryMock)
+	mockRepository.On("GetById", mock.Anything).Return(expectedObject, nil)
+	service.Repository = mockRepository
+
+	sut, _ := service.GetById(id)
+
+	assert.Equal(expectedObject.Name, sut.Name)
+	assert.Equal(expectedObject.Content, sut.Content)
+	assert.Equal(expectedObject.Status, sut.Status)
+
 }
