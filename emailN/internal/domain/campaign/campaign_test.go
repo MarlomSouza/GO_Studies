@@ -2,23 +2,21 @@ package campaign
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
  
 func TestNewCampaign(t *testing.T) {
+	assert:= assert.New(t)
 	name := "New Function"
-	content := "Use new function in go "
+	content := "Use new function in go"
 	emails := []Contact{{
 		Email: "xxx@gmail.com",
 	}}
 	
 	sut := NewCampaign(name, content, emails)
 
-	if sut.Id != "1"{
-		t.Errorf("expected 1")
-	}
-	
-	if(sut.Name != name) {
-		t.Errorf("Name if diff")
-	}
-
+	assert.Equal(name, sut.Name)
+	assert.Equal(content, sut.Content)
+	assert.Equal(emails, sut.Contacts)
 }
