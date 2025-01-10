@@ -2,6 +2,7 @@ package campaign
 
 import (
 	"emailn/internal/domain/campaign/contract"
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,14 +19,20 @@ func (r *repositoryMock) Save(campaign *Campaign) error {
 
 }
 
-func Test_Create_campaign(t *testing.T) {
-	assert := assert.New(t)
-	service := Service{}
-	newCampaign := contract.NewCampaignDto{
+var (
+	newCampaign = contract.NewCampaignDto{
 		Name:    "Test Y",
 		Content: "Content",
 		Emails:  []string{"xxx@gmail.com", "xxx@outlook.com"},
 	}
+
+	mockRepository = new(repositoryMock)
+	service        = Service{repository: mockRepository}
+)
+
+func Test_Create_campaign(t *testing.T) {
+	assert := assert.New(t)
+	mockRepository.On("Save", mock.Anything).Return(nil)
 
 	campaignId, err := service.Create(newCampaign)
 
@@ -34,38 +41,37 @@ func Test_Create_campaign(t *testing.T) {
 }
 
 func Test_Create_SaveCampaign(t *testing.T) {
-	repositoryMock := new(repositoryMock)
-	repositoryMock.On("Save", mock.Anything).Return(nil)
-	service := Service{repository: repositoryMock}
-	newCampaign := contract.NewCampaignDto{
-		Name:    "Test Y",
-		Content: "Content",
-		Emails:  []string{"xxx@gmail.com", "xxx@outlook.com"},
-	}
+	mockRepository.On("Save", mock.Anything).Return(nil)
 
 	service.Create(newCampaign)
 
-	repositoryMock.AssertExpectations(t)
+	mockRepository.AssertExpectations(t)
 }
 
 func Test_Create_SaveCampaign_ValidateObject(t *testing.T) {
-	newCampaign := contract.NewCampaignDto{
-		Name:    "Test Y",
-		Content: "Content",
-		Emails:  []string{"xxx@gmail.com", "xxx@outlook.com"},
-	}
-	repositoryMock := new(repositoryMock)
-	repositoryMock.On("Save", mock.MatchedBy(func(campaign *Campaign) bool {
-		if newCampaign.Name != campaign.Name || newCampaign.Content != campaign.Content {
-			return false
-		}
-
-		return true
+	mockRepository.On("Save", mock.MatchedBy(func(campaign *Campaign) bool {
+		return newCampaign.Name == campaign.Name && newCampaign.Content == campaign.Content
 	})).Return(nil)
-
-	service := Service{repository: repositoryMock}
 
 	service.Create(newCampaign)
 
-	repositoryMock.AssertExpectations(t)
+	mockRepository.AssertExpectations(t)
+}
+
+func Test_Create_ValidateDomainError(t *testing.T) {
+	assert := assert.New(t)
+	newCampaign.Name = ""
+
+	_, err := service.Create(newCampaign)
+
+	assert.Equal("name is required", err.Error())
+}
+
+func Test_Create_ValidateDatabaseError(t *testing.T) {
+	assert := assert.New(t)
+	mockRepository.On("Save", mock.Anything).Return(errors.New("error while saving in database"))
+
+	_, err := service.Create(newCampaign)
+
+	assert.Equal("error while saving in database", err.Error())
 }
