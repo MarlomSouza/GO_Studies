@@ -2,6 +2,8 @@ package main
 
 import (
 	"emailn/internal/contract"
+	"emailn/internal/domain/campaign"
+	"emailn/internal/infraestructure/database"
 	"net/http"
 
 	"github.com/go-chi/chi/middleware"
@@ -9,47 +11,37 @@ import (
 	"github.com/go-chi/render"
 )
 
+var (
+	repository = database.CampaignRepository{}
+	service    = campaign.Service{Repository: &repository}
+)
+
 func main() {
 	r := chi.NewRouter()
-
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
-		param := chi.URLParam(r, "name")
-		w.Write([]byte(param))
-	})
+	r.Post("/campaigns", func(w http.ResponseWriter, r *http.Request) {
+		var request contract.NewCampaignDto
+		err := render.DecodeJSON(r.Body, &request)
+		if err != nil {
+			println(err.Error())
+		}
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		queryParam := r.URL.Query().Get("id")
-		w.Write([]byte(queryParam))
+		id, err := service.Create(request)
 
-	})
+		if err != nil {
+			render.Status(r, 400)
+			render.JSON(w, r, map[string]string{"error": err.Error()})
+			return
+		}
 
-	r.Get("/json", func(w http.ResponseWriter, r *http.Request) {
+		render.Status(r, 201)
+		render.JSON(w, r, map[string]string{"id": id})
 
-		obj := map[string]string{"message": "success"}
-		render.JSON(w, r, obj)
-
-	})
-
-	r.Get("/campaign", func(w http.ResponseWriter, r *http.Request) {
-		println("running api route")
-		campaign := contract.NewCampaignDto{}
-		render.DecodeJSON(r.Body, campaign)
-		render.JSON(w, r, campaign)
 	})
 
 	http.ListenAndServe(":3000", r)
-}
-
-func myMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		println(r.Method, r.RequestURI)
-		next.ServeHTTP(w, r)
-		println("Running myMiddleware after")
-	})
 }

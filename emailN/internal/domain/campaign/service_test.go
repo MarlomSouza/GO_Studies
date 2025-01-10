@@ -33,7 +33,7 @@ func Test_Create_campaign(t *testing.T) {
 	assert := assert.New(t)
 	mockRepository := new(repositoryMock)
 	mockRepository.On("Save", mock.Anything).Return(nil)
-	service.repository = mockRepository
+	service.Repository = mockRepository
 
 	campaignId, err := service.Create(newCampaign)
 
@@ -44,7 +44,7 @@ func Test_Create_campaign(t *testing.T) {
 func Test_Create_SaveCampaign(t *testing.T) {
 	mockRepository := new(repositoryMock)
 	mockRepository.On("Save", mock.Anything).Return(nil)
-	service.repository = mockRepository
+	service.Repository = mockRepository
 
 	service.Create(newCampaign)
 
@@ -56,7 +56,7 @@ func Test_Create_SaveCampaign_ValidateObject(t *testing.T) {
 	mockRepository.On("Save", mock.MatchedBy(func(campaign *Campaign) bool {
 		return newCampaign.Name == campaign.Name && newCampaign.Content == campaign.Content
 	})).Return(nil)
-	service.repository = mockRepository
+	service.Repository = mockRepository
 
 	service.Create(newCampaign)
 
@@ -75,7 +75,7 @@ func Test_Create_ValidateDatabaseError(t *testing.T) {
 	assert := assert.New(t)
 	mockRepository := new(repositoryMock)
 	mockRepository.On("Save", mock.Anything).Return(errors.New("error while saving in database"))
-	service.repository = mockRepository
+	service.Repository = mockRepository
 
 	_, err := service.Create(newCampaign)
 

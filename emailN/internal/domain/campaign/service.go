@@ -6,7 +6,7 @@ import (
 )
 
 type Service struct {
-	repository Repository
+	Repository Repository
 }
 
 func (s *Service) Create(dto contract.NewCampaignDto) (string, error) {
@@ -22,7 +22,7 @@ func (s *Service) Create(dto contract.NewCampaignDto) (string, error) {
 		return "", err
 	}
 
-	err = s.repository.Save(campaign)
+	err = s.Repository.Save(campaign)
 	if err != nil {
 		return "", internalerrors.ErrInternal
 	}
