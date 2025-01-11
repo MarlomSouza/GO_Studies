@@ -22,6 +22,8 @@ func HandlerError(endpointFunc EndpointFunc) http.HandlerFunc {
 		if err != nil {
 			if errors.Is(err, internalerrors.ErrInternal) {
 				render.Status(r, http.StatusInternalServerError)
+			} else if errors.Is(err, internalerrors.ErrNotFound) {
+				render.Status(r, http.StatusNotFound)
 			} else {
 				render.Status(r, http.StatusBadRequest)
 			}
@@ -31,10 +33,6 @@ func HandlerError(endpointFunc EndpointFunc) http.HandlerFunc {
 		}
 		render.Status(r, response.Status)
 
-		if response.Status == http.StatusNotFound {
-			render.JSON(w, r, map[string]string{"error": "not found"})
-
-		}
 		if response.Obj != nil {
 			render.JSON(w, r, response.Obj)
 		}
