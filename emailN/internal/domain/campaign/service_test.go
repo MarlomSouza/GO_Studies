@@ -4,7 +4,8 @@ import (
 	"emailn/internal/contract"
 	"emailn/internal/domain/campaign"
 	internalerrors "emailn/internal/internal-errors"
-	"emailn/internal/test/internalmock"
+	internalmock "emailn/internal/test/internal-mock"
+
 	"errors"
 
 	"testing"
@@ -142,11 +143,24 @@ func Test_Get_ShouldReturnNilWhenIdNotFound(t *testing.T) {
 	mockRepository := new(internalmock.CampaignRepositoryMock)
 	mockRepository.On("GetById", mock.MatchedBy(func(id string) bool {
 		return expectedId == id
-	})).Return(campaign.Campaign{}, errors.New("not found"))
+	})).Return(campaign.Campaign{}, internalerrors.ErrNotFound)
 	service.Repository = mockRepository
 
 	_, sut := service.GetById(expectedId)
 
-	assert.True(errors.Is(sut, internalerrors.ErrInternal))
+	assert.True(errors.Is(sut, internalerrors.ErrNotFound))
+
+}
+
+func Test_Delete_ShouldReturnNilWhenIdNotFound(t *testing.T) {
+	assert := assert.New(t)
+	expectedId := "2"
+	mockRepository := new(internalmock.CampaignRepositoryMock)
+	mockRepository.On("GetById", mock.Anything).Return(nil, internalerrors.ErrNotFound)
+	service.Repository = mockRepository
+
+	sut := service.Delete(expectedId)
+
+	assert.True(errors.Is(sut, internalerrors.ErrNotFound))
 
 }

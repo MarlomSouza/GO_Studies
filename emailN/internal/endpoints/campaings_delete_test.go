@@ -1,10 +1,9 @@
 package endpoints
 
 import (
-	"emailn/internal/contract"
+	internalerrors "emailn/internal/internal-errors"
 	internalmock "emailn/internal/test/internal-mock"
 
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -13,38 +12,32 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func Test_Delete_Should_return_campaign(t *testing.T) {
+func Test_Delete_Should_delete_campaign(t *testing.T) {
 	assert := assert.New(t)
-	campaignDto := contract.CampaignDto{
-		Name:    "test create",
-		Content: fake.Lorem().Text(100),
-		Emails:  []string{"cxxx@gmail.com"},
-	}
 	service := new(internalmock.CampaignServiceMock)
-	service.On("GetById", mock.Anything).Return(&campaignDto, nil)
+	service.On("Delete", mock.Anything).Return(nil)
 	handler := HandlerCampaign{CampaignService: service}
 
-	req, _ := http.NewRequest(http.MethodGet, "/{id}", nil)
+	req, _ := http.NewRequest(http.MethodDelete, "/{id}", nil)
 	res := httptest.NewRecorder()
 
-	sut, err := handler.CampaignGetById(res, req)
+	sut, err := handler.CampaignDelete(res, req)
 
-	assert.Equal(http.StatusOK, sut.Status)
-	assert.Equal(campaignDto.Name, sut.Obj.(*contract.CampaignDto).Name)
-	assert.Equal(campaignDto.Content, sut.Obj.(*contract.CampaignDto).Content)
+	assert.Equal(http.StatusNoContent, sut.Status)
 	assert.Nil(err)
 }
 
-func Test_Delete_Should_return_error_when_something_wrong(t *testing.T) {
+func Test_Delete_Return_not_found_when_campaign_does_not_exist(t *testing.T) {
 	assert := assert.New(t)
 	service := new(internalmock.CampaignServiceMock)
-	expectedError := errors.New("Error when fetching")
-	service.On("GetById", mock.Anything).Return(nil, expectedError)
+	expectedError := internalerrors.ErrNotFound
+	service.On("Delete", mock.Anything).Return(expectedError)
 	handler := HandlerCampaign{CampaignService: service}
-	req, _ := http.NewRequest(http.MethodGet, "/{id}", nil)
+	req, _ := http.NewRequest(http.MethodDelete, "/{id}", nil)
 	res := httptest.NewRecorder()
 
-	_, sut := handler.CampaignGetById(res, req)
+	sut, err := handler.CampaignDelete(res, req)
 
-	assert.Equal(expectedError.Error(), sut.Error())
+	assert.Equal(expectedError.Error(), err.Error())
+	assert.Equal(http.StatusNotFound, sut.Status)
 }

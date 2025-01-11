@@ -13,7 +13,7 @@ func (h *HandlerCampaign) CampaignDelete(w http.ResponseWriter, r *http.Request)
 	err := h.CampaignService.Delete(id)
 
 	return EndpointStruct{
-		Obj: nil, Status: http.StatusAccepted,
+		Obj: nil, Status: http.StatusNoContent,
 	}, err
 
 }
