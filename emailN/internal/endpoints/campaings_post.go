@@ -10,10 +10,7 @@ import (
 func (h *HandlerCampaign) CampaignPost(w http.ResponseWriter, r *http.Request) (EndpointStruct, error) {
 
 	var request contract.NewCampaignDto
-	err := render.DecodeJSON(r.Body, &request)
-	if err != nil {
-		println(err.Error())
-	}
+	render.DecodeJSON(r.Body, &request)
 
 	id, err := h.CampaignService.Create(request)
 

@@ -8,7 +8,7 @@ import (
 type Service interface {
 	Create(dto contract.NewCampaignDto) (string, error)
 	Get() ([]contract.CampaignDto, error)
-	GetById(id string) (contract.CampaignDto, error)
+	GetById(id string) (*contract.CampaignDto, error)
 }
 
 type ServiceImp struct {
@@ -63,11 +63,11 @@ func (s *ServiceImp) Get() ([]contract.CampaignDto, error) {
 }
 
 // GetById retrieves a campaign by its ID from the repository and converts it to a DTO.
-func (s *ServiceImp) GetById(id string) (contract.CampaignDto, error) {
+func (s *ServiceImp) GetById(id string) (*contract.CampaignDto, error) {
 	campaign, err := s.Repository.GetById(id)
 
 	if err != nil {
-		return contract.CampaignDto{}, internalerrors.ErrInternal
+		return nil, internalerrors.ErrInternal
 	}
 
 	recipientEmails := make([]string, 0, len(campaign.Recipients))
@@ -82,5 +82,5 @@ func (s *ServiceImp) GetById(id string) (contract.CampaignDto, error) {
 		Status:  campaign.Status,
 	}
 
-	return campaignDtos, nil
+	return &campaignDtos, nil
 }
