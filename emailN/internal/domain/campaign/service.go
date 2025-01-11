@@ -9,6 +9,7 @@ type Service interface {
 	Create(dto contract.NewCampaignDto) (string, error)
 	Get() ([]contract.CampaignDto, error)
 	GetById(id string) (*contract.CampaignDto, error)
+	Cancel(id string) error
 }
 
 type ServiceImp struct {
@@ -83,4 +84,26 @@ func (s *ServiceImp) GetById(id string) (*contract.CampaignDto, error) {
 	}
 
 	return &campaignDtos, nil
+}
+
+func (s *ServiceImp) Cancel(id string) error {
+	campaign, err := s.Repository.GetById(id)
+
+	if err != nil {
+		return internalerrors.ErrInternal
+	}
+
+	err = campaign.Cancel()
+
+	if err != nil {
+		return err
+	}
+
+	err = s.Repository.Update(campaign)
+
+	if err != nil {
+		return internalerrors.ErrInternal
+	}
+	return nil
+
 }

@@ -2,6 +2,7 @@ package campaign
 
 import (
 	internalerrors "emailn/internal/internal-errors"
+	"errors"
 	"time"
 
 	"github.com/rs/xid"
@@ -11,12 +12,13 @@ const (
 	Pending string = "Pending"
 	Started string = "Started"
 	Done    string = "Done"
+	Cancel  string = "Cancel"
 )
 
 type Contact struct {
 	Id         string `gorm:"size:50"`
 	Email      string `validate:"email" gorm:"size:100"`
-	CampaignId string `gorm:"size:20`
+	CampaignId string `gorm:"size:50`
 }
 
 type Campaign struct {
@@ -50,6 +52,15 @@ func NewCampaign(name string, content string, recipients []Contact) (*Campaign, 
 	}
 
 	return nil, err
+}
+
+func (c *Campaign) Cancel() error {
+	if c.Status != Pending {
+		return errors.New("campaign status is invalid")
+	}
+
+	c.Status = Cancel
+	return nil
 }
 
 // func isValidCampaign(name string, content string, recipients []Contact) (bool, error) {
