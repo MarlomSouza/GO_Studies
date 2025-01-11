@@ -10,11 +10,6 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var (
-	repository = database.CampaignRepository{}
-	service    = campaign.ServiceImp{Repository: &repository}
-)
-
 func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
@@ -22,6 +17,9 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	db := database.NewDb()
+	repository := database.CampaignRepository{Db: db}
+	service := campaign.ServiceImp{Repository: &repository}
 	handler := endpoints.HandlerCampaign{
 		CampaignService: &service,
 	}
