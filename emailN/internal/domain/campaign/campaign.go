@@ -14,16 +14,18 @@ const (
 )
 
 type Contact struct {
-	Email string `validate:"email"`
+	Id         string `gorm:"size:50"`
+	Email      string `validate:"email" gorm:"size:100"`
+	CampaignId string `gorm:"size:20`
 }
 
 type Campaign struct {
-	Id         string    `validate:"required"`
-	Name       string    `validate:"min=5,max=24"`
+	Id         string    `validate:"required" gorm:"size:50" `
+	Name       string    `validate:"min=5,max=24" gorm:"size:50"`
 	CreatedOn  time.Time `validate:"required"`
-	Content    string    `validate:"min=5,max=1024"`
+	Content    string    `validate:"min=5,max=1024" gorm:"size:1050"`
 	Recipients []Contact `validate:"required,dive"`
-	Status     string
+	Status     string    `gorm:"size:20"`
 }
 
 func NewCampaign(name string, content string, recipients []Contact) (*Campaign, error) {
@@ -70,6 +72,7 @@ func NewContact(email string) (*Contact, error) {
 
 	contact := &Contact{
 		Email: email,
+		Id:    xid.New().String(),
 	}
 
 	err := internalerrors.ValidateStruct(contact)
