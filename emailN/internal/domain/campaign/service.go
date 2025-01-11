@@ -2,6 +2,7 @@ package campaign
 
 import (
 	"emailn/internal/contract"
+
 	internalerrors "emailn/internal/internal-errors"
 )
 
@@ -10,6 +11,7 @@ type Service interface {
 	Get() ([]contract.CampaignDto, error)
 	GetById(id string) (*contract.CampaignDto, error)
 	Cancel(id string) error
+	Delete(id string) error
 }
 
 type ServiceImp struct {
@@ -30,7 +32,7 @@ func (s *ServiceImp) Create(dto contract.NewCampaignDto) (string, error) {
 		return "", err
 	}
 
-	err = s.Repository.Save(campaign)
+	err = s.Repository.Create(campaign)
 	if err != nil {
 		return "", internalerrors.ErrInternal
 	}
@@ -106,4 +108,20 @@ func (s *ServiceImp) Cancel(id string) error {
 	}
 	return nil
 
+}
+
+func (s *ServiceImp) Delete(id string) error {
+	campaign, err := s.Repository.GetById(id)
+
+	if err != nil {
+		return internalerrors.ErrInternal
+	}
+
+	err = s.Repository.Delete(campaign)
+
+	if err != nil {
+		return internalerrors.ErrInternal
+	}
+
+	return nil
 }

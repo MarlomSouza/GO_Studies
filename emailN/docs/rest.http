@@ -1,7 +1,7 @@
 POST http://localhost:3000/campaigns
 
 {
-  "name": "Test 2",
+  "name": "Test 6",
   "content": "This t",
   "emails": ["marlom1012@gmail.com", "xxx@gmail.com"]
 } 
@@ -11,8 +11,11 @@ POST http://localhost:3000/campaigns
 GET  http://localhost:3000/campaigns
 
 ###
-GET http://localhost:3000/campaigns/cu0udl5qr20uf91gv69g
+GET http://localhost:3000/campaigns/cu0udl5qr2091gv69g
 
 ### 
-PATCH http://localhost:3000/campaigns/cancel/cu0udl5qr20uf91gv69g
+PATCH http://localhost:3000/campaigns/cancel/cu0udl5qruf91gv69g
 
+
+###
+DELETE http://localhost:3000/campaigns/cu0udl5qr20uf91gv69g

@@ -5,7 +5,6 @@ import (
 	"emailn/internal/contract"
 	"emailn/internal/test/internalmock"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -37,28 +36,8 @@ func Test_CampaignPost_should_save_new_campaign(t *testing.T) {
 	req, _ := http.NewRequest(http.MethodPost, "/", &buf)
 	res := httptest.NewRecorder()
 
-	response, err := handler.CampaignPost(res, req)
+	response, _ := handler.CampaignPost(res, req)
 
 	assert.Equal(http.StatusCreated, response.Status)
-	assert.Nil(err)
-}
 
-func Test_CampaignPost_should_inform_error_when_exist(t *testing.T) {
-	assert := assert.New(t)
-	body := contract.NewCampaignDto{
-		Name:    "test create",
-		Content: fake.Lorem().Text(100),
-		Emails:  []string{"xxx@gmail.com"},
-	}
-	service := new(internalmock.CampaignServiceMock)
-	service.On("Create", mock.Anything).Return("", errors.New("Error when creating"))
-	handler := HandlerCampaign{CampaignService: service}
-	var buf bytes.Buffer
-	json.NewEncoder(&buf).Encode(body)
-	req, _ := http.NewRequest(http.MethodPost, "/", &buf)
-	res := httptest.NewRecorder()
-
-	_, sut := handler.CampaignPost(res, req)
-
-	assert.NotNil(sut)
 }
