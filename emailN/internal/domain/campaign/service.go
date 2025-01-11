@@ -7,7 +7,7 @@ import (
 
 type Service interface {
 	Create(dto contract.NewCampaignDto) (string, error)
-	Get() ([]Campaign, error)
+	Get() ([]contract.CampaignDto, error)
 	GetById(id string) (contract.CampaignDto, error)
 }
 
@@ -15,6 +15,7 @@ type ServiceImp struct {
 	Repository Repository
 }
 
+// Create creates a new campaign and saves it to the repository.
 func (s *ServiceImp) Create(dto contract.NewCampaignDto) (string, error) {
 	recipients := []Contact{}
 
@@ -36,28 +37,50 @@ func (s *ServiceImp) Create(dto contract.NewCampaignDto) (string, error) {
 	return campaign.Id, nil
 }
 
-func (s *ServiceImp) Get() ([]Campaign, error) {
+// Get retrieves all campaigns from the repository and converts them to DTOs.
+func (s *ServiceImp) Get() ([]contract.CampaignDto, error) {
 	campaigns, err := s.Repository.Get()
 
 	if err != nil {
-		return []Campaign{}, internalerrors.ErrInternal
+		return []contract.CampaignDto{}, internalerrors.ErrInternal
 	}
 
-	return campaigns, nil
+	campaignDtos := make([]contract.CampaignDto, 0, len(campaigns))
+	for _, campaign := range campaigns {
+		recipientEmails := make([]string, 0, len(campaign.Recipients))
+		for _, recipient := range campaign.Recipients {
+			recipientEmails = append(recipientEmails, recipient.Email)
+		}
+		campaignDtos = append(campaignDtos, contract.CampaignDto{
+			Name:    campaign.Name,
+			Content: campaign.Content,
+			Emails:  recipientEmails,
+			Status:  campaign.Status,
+		})
+	}
+
+	return campaignDtos, nil
 }
 
+// GetById retrieves a campaign by its ID from the repository and converts it to a DTO.
 func (s *ServiceImp) GetById(id string) (contract.CampaignDto, error) {
-	campaigns, err := s.Repository.GetById(id)
+	campaign, err := s.Repository.GetById(id)
 
 	if err != nil {
 		return contract.CampaignDto{}, internalerrors.ErrInternal
 	}
 
-	dto := contract.CampaignDto{
-		Name:    campaigns.Name,
-		Content: campaigns.Content,
-		Status:  campaigns.Status,
+	recipientEmails := make([]string, 0, len(campaign.Recipients))
+	for _, recipient := range campaign.Recipients {
+		recipientEmails = append(recipientEmails, recipient.Email)
 	}
 
-	return dto, nil
+	campaignDtos := contract.CampaignDto{
+		Name:    campaign.Name,
+		Content: campaign.Content,
+		Emails:  recipientEmails,
+		Status:  campaign.Status,
+	}
+
+	return campaignDtos, nil
 }

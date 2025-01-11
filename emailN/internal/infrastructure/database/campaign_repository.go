@@ -16,3 +16,12 @@ func (c *CampaignRepository) Save(campaign *campaign.Campaign) error {
 func (c *CampaignRepository) Get() ([]campaign.Campaign, error) {
 	return c.campaigns, nil
 }
+
+func (c *CampaignRepository) GetById(id string) (campaign.Campaign, error) {
+	for _, campaign := range c.campaigns {
+		if campaign.Id == id {
+			return campaign, nil
+		}
+	}
+	return campaign.Campaign{}, nil
+}

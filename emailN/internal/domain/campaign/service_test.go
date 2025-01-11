@@ -21,8 +21,8 @@ func (r *repositoryMock) Save(campaign *Campaign) error {
 }
 
 func (r *repositoryMock) Get() ([]Campaign, error) {
-	// args := r.Called()
-	return []Campaign{}, nil
+	args := r.Called()
+	return args.Get(0).([]Campaign), nil
 
 }
 
@@ -93,22 +93,83 @@ func Test_Create_ValidateDatabaseError(t *testing.T) {
 	assert.True(errors.Is(err, internalerrors.ErrInternal))
 }
 
-func Test_Get_ShouldReturnACampaignBasedOnId(t *testing.T) {
+func Test_Get_ShouldReturnAllCampaigns(t *testing.T) {
 	assert := assert.New(t)
-	id := "2"
-	expectedObject := Campaign{
-		Name:    fake.Company().Name(),
-		Content: fake.Lorem().Text(100),
-		Status:  Pending,
+	expectedObject := []Campaign{
+		{
+			Name:       fake.Company().Name(),
+			Content:    fake.Lorem().Text(100),
+			Status:     Pending,
+			Recipients: []Contact{{Email: "xxx@gmail.com"}},
+		},
+		{
+			Name:       fake.Company().Name(),
+			Content:    fake.Lorem().Text(100),
+			Status:     Pending,
+			Recipients: []Contact{{Email: "uuu@gmail.com"}},
+		},
 	}
 	mockRepository := new(repositoryMock)
-	mockRepository.On("GetById", mock.Anything).Return(expectedObject, nil)
+	mockRepository.On("Get").Return(expectedObject, nil)
 	service.Repository = mockRepository
 
-	sut, _ := service.GetById(id)
+	sut, err := service.Get()
+
+	assert.Equal(expectedObject[0].Name, sut[0].Name)
+	assert.Equal(expectedObject[0].Content, sut[0].Content)
+	assert.Equal(expectedObject[0].Status, sut[0].Status)
+	assert.Equal(expectedObject[0].Recipients[0].Email, sut[0].Emails[0])
+	assert.Nil(err)
+
+}
+
+func Test_Get_ShouldReturnNilWhenNoCampaigns(t *testing.T) {
+	assert := assert.New(t)
+	mockRepository := new(repositoryMock)
+	mockRepository.On("Get").Return([]Campaign{}, errors.New("not found"))
+	service.Repository = mockRepository
+
+	_, err := service.Get()
+
+	assert.True(errors.Is(err, internalerrors.ErrInternal))
+}
+
+func Test_Get_ShouldReturnACampaignBasedOnId(t *testing.T) {
+	assert := assert.New(t)
+	expectedId := "2"
+	expectedObject := Campaign{
+		Name:       fake.Company().Name(),
+		Content:    fake.Lorem().Text(100),
+		Status:     Pending,
+		Recipients: []Contact{{Email: "xxx@gmail.com"}},
+	}
+	mockRepository := new(repositoryMock)
+	mockRepository.On("GetById", mock.MatchedBy(func(id string) bool {
+		return id == expectedId
+	})).Return(expectedObject, nil)
+	service.Repository = mockRepository
+
+	sut, err := service.GetById(expectedId)
 
 	assert.Equal(expectedObject.Name, sut.Name)
 	assert.Equal(expectedObject.Content, sut.Content)
 	assert.Equal(expectedObject.Status, sut.Status)
+	assert.Equal(expectedObject.Recipients[0].Email, sut.Emails[0])
+	assert.Nil(err)
+}
+
+func Test_Get_ShouldReturnNilWhenIdNotFound(t *testing.T) {
+	assert := assert.New(t)
+	expectedId := "2"
+
+	mockRepository := new(repositoryMock)
+	mockRepository.On("GetById", mock.MatchedBy(func(id string) bool {
+		return expectedId == id
+	})).Return(Campaign{}, errors.New("not found"))
+	service.Repository = mockRepository
+
+	_, err := service.GetById(expectedId)
+
+	assert.True(errors.Is(err, internalerrors.ErrInternal))
 
 }

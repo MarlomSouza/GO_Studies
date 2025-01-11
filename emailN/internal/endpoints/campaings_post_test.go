@@ -3,7 +3,6 @@ package endpoints
 import (
 	"bytes"
 	"emailn/internal/contract"
-	"emailn/internal/domain/campaign"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -26,9 +25,9 @@ func (r *serviceMock) Create(dto contract.NewCampaignDto) (string, error) {
 	return args.String(0), args.Error(1)
 
 }
-func (r *serviceMock) Get() ([]campaign.Campaign, error) {
+func (r *serviceMock) Get() ([]contract.CampaignDto, error) {
 	args := r.Called()
-	return args.Get(0).([]campaign.Campaign), args.Error(1)
+	return args.Get(0).([]contract.CampaignDto), args.Error(1)
 }
 
 func (r *serviceMock) GetById(id string) (contract.CampaignDto, error) {
