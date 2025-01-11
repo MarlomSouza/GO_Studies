@@ -70,11 +70,7 @@ func (s *ServiceImp) GetById(id string) (*contract.CampaignDto, error) {
 	campaign, err := s.Repository.GetById(id)
 
 	if err != nil {
-		return nil, internalerrors.ErrInternal
-	}
-
-	if campaign == nil {
-		return nil, internalerrors.ErrNotFound
+		return nil, internalerrors.ProcessInternalError(err)
 	}
 
 	recipientEmails := make([]string, 0, len(campaign.Recipients))
@@ -96,11 +92,7 @@ func (s *ServiceImp) Cancel(id string) error {
 	campaign, err := s.Repository.GetById(id)
 
 	if err != nil {
-		return internalerrors.ErrInternal
-	}
-
-	if campaign == nil {
-		return internalerrors.ErrNotFound
+		return internalerrors.ProcessInternalError(err)
 	}
 
 	err = campaign.Cancel()
@@ -122,11 +114,7 @@ func (s *ServiceImp) Delete(id string) error {
 	campaign, err := s.Repository.GetById(id)
 
 	if err != nil {
-		return internalerrors.ErrInternal
-	}
-
-	if campaign == nil {
-		return internalerrors.ErrNotFound
+		return internalerrors.ProcessInternalError(err)
 	}
 
 	err = s.Repository.Delete(campaign)

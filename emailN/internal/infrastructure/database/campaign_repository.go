@@ -2,6 +2,7 @@ package database
 
 import (
 	"emailn/internal/domain/campaign"
+	internalerrors "emailn/internal/internal-errors"
 	"errors"
 
 	"gorm.io/gorm"
@@ -28,7 +29,7 @@ func (c *CampaignRepository) GetById(id string) (*campaign.Campaign, error) {
 	tx := c.Db.Preload("Recipients").First(&campaign, "id = ?", id)
 
 	if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, internalerrors.ErrNotFound
 	}
 
 	return &campaign, tx.Error
