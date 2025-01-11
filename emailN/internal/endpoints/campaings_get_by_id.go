@@ -8,10 +8,16 @@ import (
 
 func (h *HandlerCampaign) CampaignGetById(w http.ResponseWriter, r *http.Request) (EndpointStruct, error) {
 	id := chi.URLParam(r, "id")
-	campaigns, err := h.CampaignService.GetById(id)
+	campaign, err := h.CampaignService.GetById(id)
+
+	if campaign == nil && err == nil {
+		return EndpointStruct{
+			Obj: nil, Status: http.StatusNotFound,
+		}, nil
+	}
 
 	return EndpointStruct{
-		Obj: campaigns, Status: 200,
+		Obj: campaign, Status: http.StatusOK,
 	}, err
 
 }

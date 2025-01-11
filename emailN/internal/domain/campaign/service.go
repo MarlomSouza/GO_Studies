@@ -73,6 +73,10 @@ func (s *ServiceImp) GetById(id string) (*contract.CampaignDto, error) {
 		return nil, internalerrors.ErrInternal
 	}
 
+	if campaign == nil {
+		return nil, nil
+	}
+
 	recipientEmails := make([]string, 0, len(campaign.Recipients))
 	for _, recipient := range campaign.Recipients {
 		recipientEmails = append(recipientEmails, recipient.Email)

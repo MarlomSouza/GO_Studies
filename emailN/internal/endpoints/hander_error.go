@@ -30,6 +30,11 @@ func HandlerError(endpointFunc EndpointFunc) http.HandlerFunc {
 			return
 		}
 		render.Status(r, response.Status)
+
+		if response.Status == http.StatusNotFound {
+			render.JSON(w, r, map[string]string{"error": "not found"})
+
+		}
 		if response.Obj != nil {
 			render.JSON(w, r, response.Obj)
 		}
