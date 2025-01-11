@@ -33,6 +33,10 @@ func HandlerError(endpointFunc EndpointFunc) http.HandlerFunc {
 		}
 		render.Status(r, response.Status)
 
+		if response.Obj == nil && response.Status == http.StatusNoContent {
+			render.JSON(w, r, nil)
+		}
+
 		if response.Obj != nil {
 			render.JSON(w, r, response.Obj)
 		}
