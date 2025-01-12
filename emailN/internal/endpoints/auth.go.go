@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	oidc "github.com/coreos/go-oidc/v3/oidc"
@@ -25,7 +26,7 @@ func Auth(next http.Handler) http.Handler {
 		}
 
 		tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
-		provider, err := oidc.NewProvider(r.Context(), "http://localhost:8080/realms/providerGO")
+		provider, err := oidc.NewProvider(r.Context(), os.Getenv("OIDC_PROVIDER"))
 
 		if err != nil {
 			fmt.Println(err)
