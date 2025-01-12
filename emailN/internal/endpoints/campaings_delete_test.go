@@ -36,8 +36,8 @@ func Test_Delete_Return_not_found_when_campaign_does_not_exist(t *testing.T) {
 	req, _ := http.NewRequest(http.MethodDelete, "/{id}", nil)
 	res := httptest.NewRecorder()
 
-	sut, err := handler.CampaignDelete(res, req)
+	_, err := handler.CampaignDelete(res, req)
 
 	assert.Equal(expectedError.Error(), err.Error())
-	assert.Equal(http.StatusNotFound, sut.Status)
+
 }

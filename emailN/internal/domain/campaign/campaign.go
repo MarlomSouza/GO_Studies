@@ -28,9 +28,10 @@ type Campaign struct {
 	Content    string    `validate:"min=5,max=1024" gorm:"size:1050"`
 	Recipients []Contact `validate:"required,dive"`
 	Status     string    `gorm:"size:20"`
+	CreatedBy  string    `validate:"email" gorm:"size:100"`
 }
 
-func NewCampaign(name string, content string, recipients []Contact) (*Campaign, error) {
+func NewCampaign(name string, content string, recipients []Contact, createdBy string) (*Campaign, error) {
 
 	// isValid, err := isValidCampaign(name, content, recipients)
 	// if !isValid {
@@ -44,6 +45,7 @@ func NewCampaign(name string, content string, recipients []Contact) (*Campaign, 
 		Recipients: recipients,
 		CreatedOn:  time.Now(),
 		Status:     Pending,
+		CreatedBy:  createdBy,
 	}
 	err := internalerrors.ValidateStruct(campaign)
 

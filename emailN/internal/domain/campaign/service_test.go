@@ -121,7 +121,7 @@ func Test_Get_ShouldReturnNilWhenNoCampaigns(t *testing.T) {
 
 func Test_Get_ShouldReturnACampaignBasedOnId(t *testing.T) {
 	assert := assert.New(t)
-	expectedCampaign, _ := campaign.NewCampaign(fake.Company().Name(), fake.Lorem().Text(100), []campaign.Contact{{Email: "xxx@gmail.com"}})
+	expectedCampaign, _ := campaign.NewCampaign(fake.Company().Name(), fake.Lorem().Text(100), []campaign.Contact{{Email: "xxx@gmail.com"}}, "xxx@gmail.com")
 	mockRepository := new(internalmock.CampaignRepositoryMock)
 	mockRepository.On("GetById", mock.MatchedBy(func(id string) bool {
 		return id == expectedCampaign.Id

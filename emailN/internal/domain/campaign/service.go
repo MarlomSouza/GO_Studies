@@ -27,7 +27,7 @@ func (s *ServiceImp) Create(dto contract.NewCampaignDto) (string, error) {
 		recipients = append(recipients, *recipient)
 	}
 
-	campaign, err := NewCampaign(dto.Name, dto.Content, recipients)
+	campaign, err := NewCampaign(dto.Name, dto.Content, recipients, dto.CreatedBy)
 	if err != nil {
 		return "", err
 	}
