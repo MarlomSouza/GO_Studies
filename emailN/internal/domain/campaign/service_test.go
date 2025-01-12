@@ -16,13 +16,14 @@ import (
 )
 
 var (
+	fake        = faker.New()
 	newCampaign = contract.NewCampaignDto{
-		Name:    "Test Y",
-		Content: "Content",
-		Emails:  []string{"xxx@gmail.com", "xxx@outlook.com"},
+		Name:      "Test Y",
+		Content:   "Content",
+		Emails:    []string{"xxx@gmail.com", "xxx@outlook.com"},
+		CreatedBy: fake.Person().Contact().Email,
 	}
 	service = campaign.ServiceImp{}
-	fake    = faker.New()
 )
 
 func Test_Create_campaign(t *testing.T) {
