@@ -1,8 +1,13 @@
-GET  http://localhost:3000/ping
+@URL= http://localhost:3000
+@token = Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqcDQzQnI2X284QlljSjhnVXQ2RmhmajZmVERnWE51NVpVdVE3TlliVDlZIn0.eyJleHAiOjE3MzY2NTAwMDQsImlhdCI6MTczNjY0OTcwNCwianRpIjoiYzhhMjcyOWQtNDEwOS00MDFiLWExYjctZGYxMTQ5MDI1NWUzIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9wcm92aWRlckdPIiwiYXVkIjoiZW1haWxuIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZW1haWxuIiwic2lkIjoiNjNlMWZlNWQtMmI1Yi00NTZkLWFhZDYtOWM1MGUxNDBjODFhIiwic2NvcGUiOiIifQ.ofBXXOCs57o-yg_k-y9TFOjBCRixhzd7KXmJxZ2N6XnKJjuAjcSDskMSL2IvkUuoDwcP6nh8yJdCRSr1eSi_QhvgFzJlLWR5sjywrOWv6s0fLdDdJguXBs5mYUnjhnuntRhWkA6UoZxUBWk_mPz9ryuuwxbyk64lT7ZDX0NAd4SOtDGHEbPObxtwEVRjhkAR47x7hBxM86WIJoK0zPpLTYAq995HXwQuQjjWkb34--7H7aK2x-40A2aTkt6qMsQibR0VZZBQPwHjwxh1D1brJtlPhd90f4QwQrlOGT7GPeD-iVCKBrkJ0jfSGJH9E5PZDRZsLX6DQQGKOz7ngWkgAg
 
 ###
-POST http://localhost:3000/campaigns
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqcDQzQnI2X284QlljSjhnVXQ2RmhmajZmVERnWE51NVpVdVE3TlliVDlZIn0.eyJleHAiOjE3MzY2NDkyOTIsImlhdCI6MTczNjY0ODk5MiwianRpIjoiMjBmYTU2OWItYmFkMC00MmI4LTg4MjMtNzQ2ODg5MjllMTlkIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9wcm92aWRlckdPIiwiYXVkIjoiZW1haWxuIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZW1haWxuIiwic2lkIjoiYzQ1Y2M0MzItYWZkNC00ZDM0LWJlMTAtMWNiYzRhNWExM2ZhIiwic2NvcGUiOiIifQ.HAWXXQxTWV8BS6AUByDXCVqljCNotysNdjJxXJK9UgGVr6gC0RMvPnWQRYG8zNBbkd1m97V_ad85aZ15ydYXKOqKXqvwEXF1CZXNegcd1e9a-SytcXaAgwfrwARSIUF1SWzzEYnS8TDeHFEGWdYhqbhhPPnH1ZyDkKupadWw8L-gLuMfFzdMv6iFuYK1BTZJO3i5Q7MFur3NBhsiBjOSKRBVbi_1BwTPDT__lGt4Q8TT8Cj_NcUmYN-zqf8ANZAZbJ5V3_1u6obUJDwKXcTQfnB72VSg5dI9xI3akFutd0zJjMtpyJUYCEkoNbFgz-P8knwU73wV497A0IePu1epog
+GET  {{URL}}/ping
+
+###
+# @name id
+POST {{URL}}/campaigns
+Authorization: {{token}}
 
 {
   "name": "Test 6",
@@ -10,18 +15,21 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqcDQzQn
   "emails": ["marlom1012@gmail.com", "xxx@gmail.com"]
 } 
 
-
-
 ###
 
-GET  http://localhost:3000/campaigns
+GET  {{URL}}/campaigns
+Authorization: {{token}}
 
 ###
-GET http://localhost:3000/campaigns/cu0udl5qr2091gv69g
+GET {{URL}}/campaigns/cu0udl5qruf91gv69g
+Authorization: {{token}}
+
 
 ### 
-PATCH http://localhost:3000/campaigns/cancel/cu0udl5qruf91gv69g
+PATCH {{URL}}/campaigns/cancel/cu0udl5qruf91gv69g
+Authorization: {{token}}
 
 
 ###
-DELETE http://localhost:3000/campaigns/cu1dpl5qr20mpm6i7s6g
+DELETE {{URL}}/campaigns/cu1dpl5qr20mpm6i7s6g
+Authorization: {{token}}
